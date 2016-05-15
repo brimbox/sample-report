@@ -44,7 +44,7 @@ $POST = $main->retrieve ( $con );
 $arr_state = $main->load ( $con, $module );
 
 // module_display and module_submit are the same in this example
-$current = $main->report ( $arr_state, $module, $module );
+$current = $main->report_post ( $arr_state, $module, $module );
 $button = $current ['button'];
 
 // handle custom report charge variable
