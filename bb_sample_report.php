@@ -19,22 +19,18 @@
 /* The below is sample report to go with the sample data */
 
 /*
-	@module_name = bb_sample_report;
-	@friendly_name = Report;
-	@interface = bb_brimbox;
-	@module_type = 3;
-	@module_version = 2.0;
-	@description = This is a sample report which can be used as a template for building custom reports and modules. This is a sample report which can be used = as a template for building custom reports and modules.;
- */
+@module_name = bb_sample_report;
+@friendly_name = Report;
+@interface = bb_brimbox;
+@module_type = 3;
+@module_version = 2.0;
+@description = This is a sample report which can be used as a template for building custom reports and modules. This is a sample report which can be used = as a template for building custom reports and modules.;
+*/
 ?>
 
 <?php
 // double check permission
-$main->check_permission ( array (
-		"3_bb_brimbox",
-		"4_bb_brimbox",
-		"5_bb_brimbox" 
-) );
+$main->check_permission(array("3_bb_brimbox","4_bb_brimbox","5_bb_brimbox"));
 
 /* BEGIN STATE AND POSTBACK PROCESS */
 // get state variables
@@ -81,13 +77,15 @@ if ($button == 1) {
 			'limit' => 4,
 			'shade_rows' => true,
 			'title' => 'Return Charges',
-			's00' => 'T1.c01' 
+			's00' => 'T1.c01',
+			'usfirst' => true
 	);
 	$settings [2] [0] = array (
 			'ignore' => true,
 			'shade_rows' => true,
 			'title' => 'Return Charges',
-			's00' => 'T1.c01' 
+			's00' => 'T1.c01',
+			'ucfirst' => true
 	);
 	$settings [3] [0] = array (
 			'rows' => 15,
@@ -111,32 +109,19 @@ $main->echo_report_vars ();
 
 // Standard Report Form Variables
 // report type dropdown, use $pass as resuable parameters variable
-$params = array (
-		"select_class" => "margin",
-		"label_class" => "padded",
-		"label" => "Report Type: " 
-);
+$main->echo_tag("label", "Report Type:  ", array('class'=>"padded"));
+$params = array ("class" => "margin");
 $main->report_type ( $current ['report_type'], $params );
 
 // Report Variables and Button
 // charge type selector
-$arr_charge = array (
-		"Credit",
-		"Debit" 
-);
-$params = array (
-		"label" => "Charge Type: ",
-		"select_class" => "margin",
-		"label_class" => "padded" 
-);
+$arr_charge = array ("Credit","Debit");
+$main->echo_tag("label", "Charge Type:  ", array('class'=>"padded"));
+$params = array ("class" => "margin");
 // charge type dropdown
 $main->array_to_select ( $arr_charge, "charge_type", $charge_type, array (), $params );
 // report execution button
-$params = array (
-		"number" => 1,
-		"label" => "Submit Report",
-		"class" => "margin" 
-);
+$params = array ("number" => 1,"label" => "Submit Report", "class" => "margin");
 $main->echo_button ( "sample_report", $params );
 // End Report Form Variables
 
