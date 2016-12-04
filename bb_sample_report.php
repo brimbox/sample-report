@@ -3,7 +3,7 @@
  * Copyright Brimbox LLC
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License Version 3 (“GNU GPL v3”)
+ * it under the terms of the GNU General Public License Version 3 (GNU GPL v3)
  * as published by the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
@@ -64,7 +64,9 @@ if ($button == 1) {
 	$order_by = $main->build_sort ( $current );
 	
 	// query string with where clause
-	$query = "SELECT T1.c01 as Name, T1.c02 as Breed, T1.c03 as Owner, T1.c04 as Birthday, T1.c05 as Location, T1.c06 as Type, T2.Total FROM data_table T1 " . "LEFT JOIN (SELECT key1, sum(c02::numeric(15,2)) as Total FROM data_table  WHERE " . $where_clause . "  AND row_type = 2 GROUP BY key1) T2 " . "ON T1.id = T2.key1 WHERE T1.row_type = 1 and T1.archive IN (0) " . $order_by . ";";
+	$query = "SELECT T1.c01 as Name, T1.c02 as Breed, T1.c03 as Owner, T1.c04 as Birthday, T1.c05 as Location, T1.c06 as Type, T2.Total FROM data_table T1 " .
+	"LEFT JOIN (SELECT key1, sum(c02::numeric(15,2)) as Total FROM data_table  WHERE " . $where_clause . "  AND row_type = 2 GROUP BY key1) T2 " .
+	"ON T1.id = T2.key1 WHERE T1.row_type = 1 and T1.archive IN (0) " . $order_by . ";";
 	// echo "<p>" . $query . "</p>";
 	// execute query
 	$result = $main->query ( $con, $query );
@@ -78,7 +80,7 @@ if ($button == 1) {
 			'shade_rows' => true,
 			'title' => 'Return Charges',
 			's00' => 'T1.c01',
-			'usfirst' => true
+			'ucfirst' => true
 	);
 	$settings [2] [0] = array (
 			'ignore' => true,
