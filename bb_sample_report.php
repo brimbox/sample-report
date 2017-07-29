@@ -53,7 +53,7 @@ $main->update ( $con, $module, $arr_state );
 /* GET DATA AND SET REPORT PARAMS */
 // prepare query with dropdown variable applied to WHERE clause
 $result = false; // prevent strict notice
-if ($button == 1) {
+if ($main->button(1)) {
 	if ($charge_type == "All") {
 		$where_clause = "1 = 1";
 	} else {
@@ -64,10 +64,48 @@ if ($button == 1) {
 	$order_by = $main->build_sort ( $current );
 	
 	// query string with where clause
-	$query = "SELECT T1.c01 as Name, T1.c02 as Breed, T1.c03 as Owner, T1.c04 as Birthday, T1.c05 as Location, T1.c06 as Type, T2.Total FROM data_table T1 " .
+	$query = "SELECT T1.c01 as Name, T1.c02 as Breed, T1.c03 as Location, T1.c04 as Birthday, T2.Total FROM data_table T1 " .
 	"LEFT JOIN (SELECT key1, sum(c02::numeric(15,2)) as Total FROM data_table  WHERE " . $where_clause . "  AND row_type = 2 GROUP BY key1) T2 " .
 	"ON T1.id = T2.key1 WHERE T1.row_type = 1 and T1.archive IN (0) " . $order_by . ";";
-	// echo "<p>" . $query . "</p>";
+	//echo "<p>" . $query . "</p>";
+	// execute query
+	$result = $main->query ( $con, $query );
+	
+	// setup report parameters
+	// first array key is report type
+	// second array key references report row type
+	$settings [1] [0] = array (
+			'ignore' => true,
+			'limit' => 4,
+			'shade_rows' => true,
+			'title' => 'Aggregated Credits and Debits',
+			's00' => 'T1.c01',
+			'ucfirst' => true
+	);
+	$settings [2] [0] = array (
+			'ignore' => true,
+			'shade_rows' => true,
+			'title' => 'Aggregated Credits and Debits',
+			's00' => 'T1.c01',
+			'ucfirst' => true
+	);
+	$settings [3] [0] = array (
+			'rows' => 15,
+			'columns' => 30,
+			'title' => 'Aggregated Credits and Debits' 
+	);
+}
+
+if ($main->button(2)) {
+	
+	// get order by for sort, the names column will be sortable
+	$order_by = $main->build_sort ( $current );
+	
+	// query string with where clause
+	$query = "SELECT T1.c01 as Name, T1.c02 as Breed, T1.c03 as Location, T1.c04 as Birthday, T2.c03 as \"Charge Type\", T2.c02 as Amount FROM data_table T1 " .
+	"LEFT JOIN (SELECT key1, c03, c02::numeric(15,2) as c02 FROM data_table WHERE row_type = 2) T2 " .
+	"ON T1.id = T2.key1 WHERE T1.row_type = 1 and T1.archive IN (0) " . $order_by . ";";
+	//echo "<p>" . $query . "</p>";
 	// execute query
 	$result = $main->query ( $con, $query );
 	
@@ -96,6 +134,7 @@ if ($button == 1) {
 	);
 }
 /* END GET DATA */
+/* END GET DATA */
 
 /* ECHO REPORT, REQUIRED FORM, AND REPORT FORM VARIABLES */
 // echo report header
@@ -103,6 +142,8 @@ echo "<p class=\"spaced bold larger\">Sample Report</p>";
 
 // Start Required Form
 // echo form with normal Brimbox vars
+echo "<div class=\"inlineblock spaced twice border\">";
+
 $main->echo_form_begin ();
 $main->echo_module_vars ();
 
@@ -114,22 +155,28 @@ $main->echo_report_vars ();
 $main->echo_tag("label", "Report Type:  ", array('class'=>"padded"));
 $params = array ("class" => "margin");
 $main->report_type ( $current ['report_type'], $params );
-
+echo "<br>";
 // Report Variables and Button
 // charge type selector
+$params = array ("number" => 1,"label" => "Aggregated Credits and Debits", "class" => "margin");
+$main->echo_button ( "sample_aggregated", $params );
 $arr_charge = array ("Credit","Debit");
 $main->echo_tag("label", "Charge Type:  ", array('class'=>"padded"));
 $params = array ("class" => "margin");
 // charge type dropdown
 $main->array_to_select ( $arr_charge, "charge_type", $charge_type, array (), $params );
 // report execution button
-$params = array ("number" => 1,"label" => "Submit Report", "class" => "margin");
-$main->echo_button ( "sample_report", $params );
+echo "<br>";
+$params = array ("number" => 2,"label" => "Return Charges", "class" => "margin");
+$main->echo_button ( "sample_charges", $params );
+// End Report Form Variables
 // End Report Form Variables
 
 // end form
 $main->echo_form_end ();
 // End Required Form
+
+echo "</div>";
 
 // output report outside form
 if ($result) {
