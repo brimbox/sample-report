@@ -23,7 +23,7 @@
 @friendly_name = Report;
 @interface = bb_brimbox;
 @module_type = 3;
-@module_version = 2.0;
+@module_version = 2.3;
 @description = This is a sample report which can be used as a template for building custom reports and modules. This is a sample report which can be used = as a template for building custom reports and modules.;
 */
 ?>
